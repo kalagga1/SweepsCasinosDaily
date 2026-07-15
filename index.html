@@ -157,30 +157,78 @@
             document.documentElement.style.setProperty('--accent', '#3b82f6');
         }
 
-        // Site data (same as iOS app)
+        // Site data in your original order (cleaned names)
         const sites = [
-            "Acebet", "American Luck", "Baba Casino", "Cider Casino", "Clubs Casino",
-            "Coinz.us", "Crown Coins", "Dogg House", "FireSevens", "Fortune Wheelz",
-            "Fortune Wins", "Funrize", "Funzcity", "Gleaming Slots", "Go Go Gold",
-            "Golden Hearts Games", "Hello Millions", "High 5", "Jackpot Go", "Jackpot Rabbit",
-            "Jackpota", "King Prize", "Lavish Luck", "Lone Star", "Luck Party",
-            "McLuck", "Mega Bonanza", "Moozi", "Mr Goodwin", "No Limit Coins",
-            "Playfame", "Playtana", "Poly", "Pulsz", "Punt", "Real Prize", "Rebet",
-            "Regal Coins", "Rolla", "Scarlet Sands", "Shuffle.us", "Sidepot",
-            "Spindoo", "Spinblitz", "Spinquest", "Sportzino", "Spree Casino",
-            "Stake.us", "Sweepico", "Tao Fortune", "Tang Luck", "The Boss",
-            "Vegas Way", "Win Bonanza", "Win Era", "Wow Vegas", "Yay", "Zula"
-        ].sort();
+            "Spinquest",
+            "Acebet",
+            "Wow Vegas",
+            "Playfame",
+            "Moozi",
+            "Stake.us",
+            "Tang Luck",
+            "Zula",
+            "Win Bonanza",
+            "Luck Party",
+            "Yay",
+            "American Luck",
+            "Fortune Wins",
+            "Sportzino",
+            "FireSevens",
+            "King Prize",
+            "Rolla",
+            "The Boss",
+            "Dogg House",
+            "Rebet",
+            "Hello Millions",
+            "Pulsz",
+            "McLuck",
+            "Spinblitz",
+            "Crown Coins",
+            "Mr Goodwin",
+            "Funrize",
+            "Funzcity",
+            "No Limit Coins",
+            "Fortune Wheelz",
+            "Tao Fortune",
+            "Scarlet Sands",
+            "Playtana",
+            "Jackpot Rabbit",
+            "FireSevens",
+            "Sweepico",
+            "Vegas Way",
+            "Golden Hearts Games",
+            "Regal Coins",
+            "Win Era",
+            "Lone Star",
+            "Real Prize",
+            "Jackpota",
+            "Mega Bonanza",
+            "Spindoo",
+            "Baba Casino",
+            "Cider Casino",
+            "Gleaming Slots",
+            "Spree Casino",
+            "Lavish Luck",
+            "Jackpot Go",
+            "Coinz.us",
+            "Sidepot",
+            "Shuffle.us",
+            "Poly",
+            "Go Go Gold",
+            "High 5",
+            "Clubs Casino",
+            "Punt"
+        ];
 
         const siteURLs = {
-            "Acebet": "https://acebet.com",
-            "American Luck": "https://americanluck.com",
-            "Baba Casino": "https://babacasino.com",
-            "Cider Casino": "https://cidercasino.com",
+            "Acebet": "https://acebet.cc/welcome/r/kalagga",
+            "American Luck": "https://americanluck.com/signup/e20229e9-24c0-460c-9a26-5ce5ccd6eed5",
+            "Baba Casino": "https://play.babacasino.com/#/?referral_id=efd6a7592a2f240acd5a52e38bf5b2c3&inv_referral=true&fb_source=invite",
+            "Cider Casino": "https://cidercasino.onelink.me/QfGN/oio1bede?c=VTD525GK",
             "Clubs Casino": "https://clubscasino.com",
-            "Coinz.us": "https://coinz.us",
+            "Coinz.us": "https://coinz.us/?referral_code=9583712560c22f0e",
             "Crown Coins": "https://crowncoins.com",
-            "Dogg House": "https://dogghouse.com",
+            "Dogg House": "https://prod.d1qrywpnm2lw71.amplifyapp.com?code=U-KAE-24W-JQ&type=refferal_code",
             "FireSevens": "https://firesevens.com",
             "Fortune Wheelz": "https://fortunewheelz.com",
             "Fortune Wins": "https://fortunewins.com",
@@ -200,7 +248,7 @@
             "Luck Party": "https://luckparty.com",
             "McLuck": "https://mcluck.com",
             "Mega Bonanza": "https://megabonanza.com",
-            "Moozi": "https://moozi.com",
+            "Moozi": "https://moozi.com/signup?referral_code=7609958024",
             "Mr Goodwin": "https://mrgoodwin.com",
             "No Limit Coins": "https://nolimitcoins.com",
             "Playfame": "https://playfame.com",
@@ -217,10 +265,10 @@
             "Sidepot": "https://sidepot.com",
             "Spindoo": "https://spindoo.com",
             "Spinblitz": "https://spinblitz.com",
-            "Spinquest": "https://spinquest.com",
+            "Spinquest": "spinquest.com/?u=P3MITMQ",
             "Sportzino": "https://sportzino.com",
             "Spree Casino": "https://spreecasino.com",
-            "Stake.us": "https://stake.us",
+            "Stake.us": "stake.us/?c=LSvF38NV",
             "Sweepico": "https://sweepico.com",
             "Tao Fortune": "https://taofortune.com",
             "Tang Luck": "https://tangluck.com",
@@ -228,14 +276,15 @@
             "Vegas Way": "https://vegasway.com",
             "Win Bonanza": "https://winbonanza.com",
             "Win Era": "https://winera.com",
-            "Wow Vegas": "https://wowvegas.com",
+            "Wow Vegas": "https://www.wowvegas.com/?raf=12449213",
             "Yay": "https://yay.com",
-            "Zula": "https://zula.com"
+            "Zula": "https://www.zulacasino.com/signup/4f5cfdf2-6d92-4d73-b22b-6f26c86082cf"
         };
 
         // State
         let checkedSites = new Set();
         let lastResetDate = '';
+        let lastVisited = {};  // { site: timestamp } - persists across days
 
         function getTodayString() {
             const now = new Date();
@@ -252,6 +301,11 @@
                 }
                 
                 lastResetDate = localStorage.getItem('dailySiteCheck_lastReset') || '';
+                
+                const savedLastVisited = localStorage.getItem('dailySiteCheck_lastVisited');
+                if (savedLastVisited) {
+                    lastVisited = JSON.parse(savedLastVisited);
+                }
             } catch (e) {
                 console.warn('Could not load state from localStorage');
             }
@@ -261,6 +315,7 @@
             try {
                 localStorage.setItem('dailySiteCheck_checked', JSON.stringify([...checkedSites]));
                 localStorage.setItem('dailySiteCheck_lastReset', lastResetDate);
+                localStorage.setItem('dailySiteCheck_lastVisited', JSON.stringify(lastVisited));
             } catch (e) {
                 console.warn('Could not save state to localStorage');
             }
@@ -311,6 +366,24 @@
             });
         }
 
+        function formatLastVisited(timestamp) {
+            if (!timestamp) return '';
+            
+            const date = new Date(timestamp);
+            const now = new Date();
+            const yesterday = new Date(now);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (date.toDateString() === now.toDateString()) {
+                return 'Today ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } else {
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + 
+                       ' ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            }
+        }
+
         function renderSites(filteredSites = null) {
             const container = document.getElementById('sites-list');
             const noResults = document.getElementById('no-results');
@@ -333,10 +406,15 @@
                 const row = document.createElement('div');
                 row.className = `site-row flex items-center gap-3 px-5 py-4 group`;
                 
+                const lastTime = lastVisited[site] ? formatLastVisited(lastVisited[site]) : 'Never';
+                
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <div class="font-medium text-[15px] text-slate-800 dark:text-slate-100 tracking-[-0.1px]">
                             ${site}
+                        </div>
+                        <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
+                            Last: ${lastTime}
                         </div>
                     </div>
                     
@@ -366,6 +444,8 @@
                 checkedSites.delete(site);
             } else {
                 checkedSites.add(site);
+                // Record last visit time (when marked as visited)
+                lastVisited[site] = Date.now();
             }
             
             saveState();
@@ -382,7 +462,11 @@
         }
 
         function markAllVisited() {
-            sites.forEach(site => checkedSites.add(site));
+            const now = Date.now();
+            sites.forEach(site => {
+                checkedSites.add(site);
+                lastVisited[site] = now;
+            });
             saveState();
             updateProgress();
             renderSites();
