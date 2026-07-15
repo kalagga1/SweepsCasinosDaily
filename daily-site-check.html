@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Site Check • Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #3b82f6;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .site-row {
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .site-row:hover {
+            background-color: #f8fafc;
+        }
+        
+        .dark .site-row:hover {
+            background-color: #1e2937;
+        }
+
+        .check-icon {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-header {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-shadow {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <div class="max-w-2xl mx-auto min-h-screen">
+        <!-- Header -->
+        <div class="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800">
+            <div class="px-5 pt-6 pb-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-display tracking-tighter font-semibold">Daily Site Check</h1>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Track your daily visits</p>
+                    </div>
+                    <div class="text-right">
+                        <div id="date-display" 
+                             class="text-sm font-medium text-slate-600 dark:text-slate-300"></div>
+                        <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center justify-end gap-1 mt-0.5">
+                            <i class="fa-solid fa-sync fa-xs"></i>
+                            <span>Resets at midnight</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="px-5 pt-5">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 modern-shadow border border-slate-100 dark:border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Today's Progress</div>
+                        <div id="progress-text" 
+                             class="text-4xl font-display font-semibold tracking-tighter text-slate-900 dark:text-white mt-1">
+                            0 / 58
+                        </div>
+                    </div>
+                    
+                    <div class="text-right">
+                        <div class="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-2xl text-sm font-medium">
+                            <i class="fa-solid fa-check-double"></i>
+                            <span id="progress-percentage">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress bar -->
+                <div class="mt-4 h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div id="progress-bar" 
+                         class="h-2.5 bg-emerald-500 rounded-full transition-all duration-300"
+                         style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search + Actions -->
+        <div class="px-5 pt-5 pb-3">
+            <div class="flex gap-3">
+                <!-- Search -->
+                <div class="flex-1 relative">
+                    <input 
+                        id="search-input"
+                        type="text" 
+                        placeholder="Search sites..." 
+                        class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-blue-500 transition-colors pl-11 py-3 rounded-2xl text-sm placeholder:text-slate-400 focus:outline-none">
+                    <i class="fa-solid fa-search absolute left-4 top-4 text-slate-400"></i>
+                </div>
+                
+                <!-- Quick actions -->
+                <div class="flex gap-2">
+                    <button onclick="markAllVisited()"
+                            class="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-colors text-white text-sm font-semibold rounded-2xl flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-check-double fa-sm"></i>
+                        <span class="hidden sm:inline">Mark All</span>
+                    </button>
+                    
+                    <button onclick="resetAllChecks()"
+                            class="px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors text-sm font-semibold rounded-2xl flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-undo fa-sm"></i>
+                        <span class="hidden sm:inline">Reset</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sites List -->
+        <div class="px-5 pb-8">
+            <div id="sites-list" 
+                 class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden modern-shadow divide-y divide-slate-100 dark:divide-slate-700">
+                <!-- Populated by JavaScript -->
+            </div>
+            
+            <div id="no-results" class="hidden text-center py-8 text-slate-400">
+                <i class="fa-solid fa-search text-2xl mb-2"></i>
+                <p class="text-sm">No sites found</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-5 pb-8 text-center">
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+                Data saved in your browser • Works offline<br>
+                <span class="font-mono text-[10px]">v2 • Web Edition</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#3b82f6');
+        }
+
+        // Site data (same as iOS app)
+        const sites = [
+            "Acebet", "American Luck", "Baba Casino", "Cider Casino", "Clubs Casino",
+            "Coinz.us", "Crown Coins", "Dogg House", "FireSevens", "Fortune Wheelz",
+            "Fortune Wins", "Funrize", "Funzcity", "Gleaming Slots", "Go Go Gold",
+            "Golden Hearts Games", "Hello Millions", "High 5", "Jackpot Go", "Jackpot Rabbit",
+            "Jackpota", "King Prize", "Lavish Luck", "Lone Star", "Luck Party",
+            "McLuck", "Mega Bonanza", "Moozi", "Mr Goodwin", "No Limit Coins",
+            "Playfame", "Playtana", "Poly", "Pulsz", "Punt", "Real Prize", "Rebet",
+            "Regal Coins", "Rolla", "Scarlet Sands", "Shuffle.us", "Sidepot",
+            "Spindoo", "Spinblitz", "Spinquest", "Sportzino", "Spree Casino",
+            "Stake.us", "Sweepico", "Tao Fortune", "Tang Luck", "The Boss",
+            "Vegas Way", "Win Bonanza", "Win Era", "Wow Vegas", "Yay", "Zula"
+        ].sort();
+
+        const siteURLs = {
+            "Acebet": "https://acebet.com",
+            "American Luck": "https://americanluck.com",
+            "Baba Casino": "https://babacasino.com",
+            "Cider Casino": "https://cidercasino.com",
+            "Clubs Casino": "https://clubscasino.com",
+            "Coinz.us": "https://coinz.us",
+            "Crown Coins": "https://crowncoins.com",
+            "Dogg House": "https://dogghouse.com",
+            "FireSevens": "https://firesevens.com",
+            "Fortune Wheelz": "https://fortunewheelz.com",
+            "Fortune Wins": "https://fortunewins.com",
+            "Funrize": "https://funrize.com",
+            "Funzcity": "https://funzcity.com",
+            "Gleaming Slots": "https://gleamingslots.com",
+            "Go Go Gold": "https://gogogold.com",
+            "Golden Hearts Games": "https://goldenheartsgames.com",
+            "Hello Millions": "https://hellomillions.com",
+            "High 5": "https://high5casino.com",
+            "Jackpot Go": "https://jackpotgo.com",
+            "Jackpot Rabbit": "https://jackpotrabbit.com",
+            "Jackpota": "https://jackpota.com",
+            "King Prize": "https://kingprize.com",
+            "Lavish Luck": "https://lavishluck.com",
+            "Lone Star": "https://lonestarcasino.com",
+            "Luck Party": "https://luckparty.com",
+            "McLuck": "https://mcluck.com",
+            "Mega Bonanza": "https://megabonanza.com",
+            "Moozi": "https://moozi.com",
+            "Mr Goodwin": "https://mrgoodwin.com",
+            "No Limit Coins": "https://nolimitcoins.com",
+            "Playfame": "https://playfame.com",
+            "Playtana": "https://playtana.com",
+            "Poly": "https://poly.com",
+            "Pulsz": "https://pulsz.com",
+            "Punt": "https://punt.com",
+            "Real Prize": "https://realprize.com",
+            "Rebet": "https://rebet.com",
+            "Regal Coins": "https://regalcoins.com",
+            "Rolla": "https://rolla.com",
+            "Scarlet Sands": "https://scarletsands.com",
+            "Shuffle.us": "https://shuffle.us",
+            "Sidepot": "https://sidepot.com",
+            "Spindoo": "https://spindoo.com",
+            "Spinblitz": "https://spinblitz.com",
+            "Spinquest": "https://spinquest.com",
+            "Sportzino": "https://sportzino.com",
+            "Spree Casino": "https://spreecasino.com",
+            "Stake.us": "https://stake.us",
+            "Sweepico": "https://sweepico.com",
+            "Tao Fortune": "https://taofortune.com",
+            "Tang Luck": "https://tangluck.com",
+            "The Boss": "https://theboss.com",
+            "Vegas Way": "https://vegasway.com",
+            "Win Bonanza": "https://winbonanza.com",
+            "Win Era": "https://winera.com",
+            "Wow Vegas": "https://wowvegas.com",
+            "Yay": "https://yay.com",
+            "Zula": "https://zula.com"
+        };
+
+        // State
+        let checkedSites = new Set();
+        let lastResetDate = '';
+
+        function getTodayString() {
+            const now = new Date();
+            return now.getFullYear() + '-' + 
+                   String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(now.getDate()).padStart(2, '0');
+        }
+
+        function loadState() {
+            try {
+                const savedChecked = localStorage.getItem('dailySiteCheck_checked');
+                if (savedChecked) {
+                    checkedSites = new Set(JSON.parse(savedChecked));
+                }
+                
+                lastResetDate = localStorage.getItem('dailySiteCheck_lastReset') || '';
+            } catch (e) {
+                console.warn('Could not load state from localStorage');
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('dailySiteCheck_checked', JSON.stringify([...checkedSites]));
+                localStorage.setItem('dailySiteCheck_lastReset', lastResetDate);
+            } catch (e) {
+                console.warn('Could not save state to localStorage');
+            }
+        }
+
+        function checkAndResetIfNeeded() {
+            const today = getTodayString();
+            
+            if (lastResetDate !== today) {
+                // New day - reset everything
+                checkedSites.clear();
+                lastResetDate = today;
+                saveState();
+                console.log('%c[Daily Site Check] New day detected — checks have been reset.', 'color:#64748b');
+            }
+        }
+
+        function updateProgress() {
+            const total = sites.length;
+            const done = checkedSites.size;
+            const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+            // Update text
+            document.getElementById('progress-text').textContent = `${done} / ${total}`;
+            document.getElementById('progress-percentage').textContent = `${percent}%`;
+            
+            // Update progress bar
+            const bar = document.getElementById('progress-bar');
+            bar.style.width = `${percent}%`;
+            
+            // Color the bar based on progress
+            if (percent === 100) {
+                bar.className = 'h-2.5 bg-emerald-500 rounded-full transition-all duration-300';
+            } else if (percent > 60) {
+                bar.className = 'h-2.5 bg-emerald-400 rounded-full transition-all duration-300';
+            } else {
+                bar.className = 'h-2.5 bg-blue-500 rounded-full transition-all duration-300';
+            }
+        }
+
+        function updateDateDisplay() {
+            const dateEl = document.getElementById('date-display');
+            const today = new Date();
+            dateEl.textContent = today.toLocaleDateString('en-US', { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        function renderSites(filteredSites = null) {
+            const container = document.getElementById('sites-list');
+            const noResults = document.getElementById('no-results');
+            
+            container.innerHTML = '';
+            
+            const toRender = filteredSites || sites;
+            
+            if (toRender.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            toRender.forEach(site => {
+                const isChecked = checkedSites.has(site);
+                const url = siteURLs[site] || '#';
+                
+                const row = document.createElement('div');
+                row.className = `site-row flex items-center gap-3 px-5 py-4 group`;
+                
+                row.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-[15px] text-slate-800 dark:text-slate-100 tracking-[-0.1px]">
+                            ${site}
+                        </div>
+                    </div>
+                    
+                    <!-- Visit Link -->
+                    <a href="${url}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="flex items-center justify-center w-9 h-9 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 active:scale-95"
+                       title="Open ${site} in new tab">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-lg"></i>
+                    </a>
+                    
+                    <!-- Checkbox -->
+                    <button 
+                        class="flex items-center justify-center w-9 h-9 rounded-2xl transition-all active:scale-90 ${isChecked ? 'text-emerald-600' : 'text-slate-300 dark:text-slate-600 hover:text-slate-400'}"
+                        onclick="toggleSite('${site.replace(/'/g, "\\'")}')">
+                        <i class="fa-solid ${isChecked ? 'fa-check-circle text-emerald-600 text-3xl' : 'fa-circle text-3xl'} check-icon"></i>
+                    </button>
+                `;
+                
+                container.appendChild(row);
+            });
+        }
+
+        function toggleSite(site) {
+            if (checkedSites.has(site)) {
+                checkedSites.delete(site);
+            } else {
+                checkedSites.add(site);
+            }
+            
+            saveState();
+            updateProgress();
+            
+            // Re-render only this row for better performance (simple approach: full re-render)
+            const searchValue = document.getElementById('search-input').value.toLowerCase().trim();
+            if (searchValue) {
+                const filtered = sites.filter(s => s.toLowerCase().includes(searchValue));
+                renderSites(filtered);
+            } else {
+                renderSites();
+            }
+        }
+
+        function markAllVisited() {
+            sites.forEach(site => checkedSites.add(site));
+            saveState();
+            updateProgress();
+            renderSites();
+            
+            // Subtle success animation
+            const container = document.getElementById('sites-list');
+            container.style.transition = 'all 0.2s';
+            container.style.boxShadow = '0 0 0 3px rgb(16 185 129 / 0.2)';
+            setTimeout(() => {
+                container.style.boxShadow = '';
+            }, 600);
+        }
+
+        function resetAllChecks() {
+            if (!confirm('Reset all checks for today?')) return;
+            
+            checkedSites.clear();
+            saveState();
+            updateProgress();
+            renderSites();
+        }
+
+        function filterSites() {
+            const searchInput = document.getElementById('search-input');
+            const value = searchInput.value.toLowerCase().trim();
+            
+            if (!value) {
+                renderSites();
+                return;
+            }
+            
+            const filtered = sites.filter(site => 
+                site.toLowerCase().includes(value)
+            );
+            
+            renderSites(filtered);
+        }
+
+        function initializeSearch() {
+            const searchInput = document.getElementById('search-input');
+            
+            searchInput.addEventListener('input', () => {
+                filterSites();
+            });
+            
+            // Clear search on Escape
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    searchInput.value = '';
+                    renderSites();
+                    searchInput.blur();
+                }
+            });
+        }
+
+        function initializeKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Cmd/Ctrl + K to focus search
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('search-input').focus();
+                    document.getElementById('search-input').select();
+                }
+                
+                // Cmd/Ctrl + Shift + R to reset
+                if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'r') {
+                    e.preventDefault();
+                    resetAllChecks();
+                }
+            });
+            
+            // Show keyboard hint in console
+            console.log('%c[Daily Site Check] Keyboard shortcuts: ⌘K (search), ⌘⇧R (reset)', 'color:#64748b');
+        }
+
+        // Main initialization
+        function init() {
+            initializeTailwind();
+            
+            // Load saved state
+            loadState();
+            
+            // Check if we need to reset for a new day
+            checkAndResetIfNeeded();
+            
+            // Initial UI updates
+            updateDateDisplay();
+            updateProgress();
+            
+            // Render all sites
+            renderSites();
+            
+            // Setup interactions
+            initializeSearch();
+            initializeKeyboardShortcuts();
+            
+            // Make sure progress is correct after possible reset
+            setTimeout(updateProgress, 50);
+            
+            // Optional: Auto-refresh date at midnight (basic)
+            setInterval(() => {
+                const newDate = getTodayString();
+                if (newDate !== lastResetDate) {
+                    checkAndResetIfNeeded();
+                    updateDateDisplay();
+                    renderSites();
+                    updateProgress();
+                }
+            }, 60000); // Check every minute
+            
+            // Welcome message in console
+            console.log('%c[Daily Site Check] Web app initialized. All data stays in your browser.', 'color:#64748b');
+        }
+
+        // Boot the app
+        window.onload = init;
+        
+        // Expose some functions globally for debugging if needed
+        window.DailySiteCheck = { markAllVisited, resetAllChecks, getChecked: () => [...checkedSites] };
+    </script>
+</body>
+</html>
