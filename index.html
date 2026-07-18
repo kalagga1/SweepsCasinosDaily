@@ -282,6 +282,15 @@
             "Zula": "https://www.zulacasino.com/signup/4f5cfdf2-6d92-4d73-b22b-6f26c86082cf"
         };
 
+        // Short blurbs/summaries for each site
+        const siteBlurbs = {
+            "Spinquest": "The daily bonus is a banner at the top of the page. Click over to the second banner.",
+            // Add more here, one per line
+            "Acebet": "More explanations on the way....",
+            "Wow Vegas": "",
+            // ... etc for the rest
+        };
+
         // State
         let checkedSites = new Set();
         let lastResetDate = '';
@@ -412,11 +421,15 @@
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <div class="font-medium text-[15px] text-slate-800 dark:text-slate-100 tracking-[-0.1px]">
-                ${toRender.indexOf(site) + 1}. ${site}
+                            ${toRender.indexOf(site) + 1}. ${site}
                         </div>
                         <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
                             Last: ${lastTime}
                         </div>
+                        ${siteBlurbs[site] ? `
+                        <div class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">
+                            ${siteBlurbs[site]}
+                        </div>` : ''}
                     </div>
                     
                     <!-- Visit Link -->
